@@ -13,7 +13,7 @@ app.post('/api/chat', async (req, res) => {
   const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
     method: 'POST',
     headers: {
-      'Authorization': 'Bearer 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',
+      'Authorization': 'Bearer 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',
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
@@ -32,7 +32,14 @@ app.post('/api/chat', async (req, res) => {
   });
 
   const data = await response.json();
-  res.json({ reply: data.choices[0].message.content });
+
+  if (data.choices && data.choices.length > 0) {
+    res.json({ reply: data.choices[0].message.content });
+  } else {
+  console.error('Erro na resposta da API:', data);
+  res.status(500).json({ reply: 'Desculpa, algo deu errado na resposta. Tenta de novo mais tarde 😓' });
+}
+
 });
 
 app.listen(PORT, () => {
